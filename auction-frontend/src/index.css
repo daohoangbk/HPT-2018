@@ -13,7 +13,12 @@ code {
     monospace;
 }
 
-#manager-page {
+.main-content {
   max-width: 500px;
+  margin: auto;
+}
+
+.main-content img {
+  max-width: 300px;
   margin: auto;
 }

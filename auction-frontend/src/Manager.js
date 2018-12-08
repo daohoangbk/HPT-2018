@@ -3,18 +3,21 @@ import React, {
 } from 'react';
 import web3 from './web3';
 import auction from './auction';
+import $ from 'jquery';
+import Bidder from './Bidder';
 
 class Manager extends Component {
     state = {
         image: null,
         name: '',
         description: '',
-        price: 0
+        price: 0,
+        isBidding: false
     };
 
     async componentDidMount() {
-        const isBidding = await auction.methods.isBidding().call();
-        console.log(isBidding);
+        let isBidding = await auction.methods.isBidding().call();
+        this.setState({isBidding: isBidding});
     }
 
     handleImageChange = (event) => {
@@ -31,39 +34,78 @@ class Manager extends Component {
             this.setState({price: parseFloat(event.target.value)});
         }
     };
-    handleSubmit = (event) => {
+    handleSubmit = async (event) => {
         event.preventDefault();
         console.log(this.state);
-        fetch('http://localhost/hpt', {
-            body: JSON.stringify(this.state),
-            cache: 'no-cache',
-            headers: {
-                'content-type': 'application/json'
-            },
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            // mode: 'cors', // no-cors, cors, *same-origin
-            // redirect: 'follow', // *manual, follow, error
-            // referrer: 'no-referrer', // *client, no-referrer
-        })
-            .then(function (response) {
-                console.log(response.json());
-                return response.json(); // parses json
-            })
-            .then(function (myJson) {
-                console.log(myJson);
-            });
+        const accounts = await web3.eth.getAccounts();
+        await auction.methods.auction(this.state.price).send({
+            from: accounts[0]
+        });
+        let isBidding = await auction.methods.isBidding().call();
+        this.setState({isBidding: isBidding});
+        // let form_data = new FormData();
+        // //thêm files vào trong form data
+        // form_data.append('file', this.state.image);
+        // form_data.append('name', this.state.name);
+        // form_data.append('price', this.state.price);
+        // form_data.append('description', this.state.description);
+        // console.log(form_data);
+        // //sử dụng ajax post
+        // $.ajax({
+        //     url: "http://localhost/hpt/auction/doUpload", // gửi đến file upload.php
+        //     dataType: 'text',
+        //     cache: false,
+        //     contentType: false,
+        //     processData: false,
+        //     data: form_data,
+        //     type: 'post',
+        //     success: function (res) {
+        //         $('.status').text(res);
+        //         console.log(res);
+        //         $('#file').val('');
+        //     }
+        // });
+        // --------------------------------------------------------------------------
+        // let formBody = [];
+        // for (let property in this.state) {
+        //     let encodedKey = encodeURIComponent(property);
+        //     let encodedValue = encodeURIComponent(this.state[property]);
+        //     formBody.push(encodedKey + "=" + encodedValue);
+        // }
+        // formBody = formBody.join("&");
+        // fetch('http://localhost/hpt/auction/doUpload', {
+        //     body: formBody,
+        //     cache: 'no-cache',
+        //     headers: {
+        //         // 'content-type': 'application/json'
+        //         'Content-Type': 'application/x-www-form-urlencoded'
+        //     },
+        //     method: 'POST',
+        // })
+        //     .then(function (response) {
+        //         return response.json();
+        //     })
+        //     .then(function (myJson) {
+        //         console.log(myJson);
+        //     });
     };
 
     render() {
-        return (
-            <div>
-                <div id="manager-page">
+        if (this.state.isBidding) {
+        // if (false) {
+            return (
+                <Bidder isManager={true} />
+            );
+        } else {
+            return (
+                <div id="manager-page" class="main-content">
                     <h1 className="text-center">Manager</h1>
                     <form name="myForm" onSubmit={this.handleSubmit}>
                         <div className="form-group">
                             <div>
                                 <span className="input-title">Ảnh minh họa:</span>
-                                <input className="form-control" name="image" onChange={this.handleImageChange} type="file"
+                                <input className="form-control" name="image" onChange={this.handleImageChange}
+                                       type="file"
                                        accept="image/*" required/>
                             </div>
                         </div>
@@ -79,8 +121,9 @@ class Manager extends Component {
                         <div className="form-group">
                             <div>
                                 <span className="input-title">Thông tin bổ sung:</span>
-                                <textarea className="form-control" name="description" onChange={this.handleDescriptionChange}
-                                       value={this.state.description} type="text" required/>
+                                <textarea className="form-control" name="description"
+                                          onChange={this.handleDescriptionChange}
+                                          value={this.state.description} type="text" required/>
                             </div>
                         </div>
 
@@ -99,9 +142,8 @@ class Manager extends Component {
                         </div>
                     </form>
                 </div>
-            </div>
-        );
-
+            );
+        }
     }
 }
 
