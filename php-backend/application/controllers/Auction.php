@@ -71,4 +71,17 @@ class Auction extends CI_Controller
 //            die('Lock'); // nếu không phải post method
 //        }
     }
+    public function get_lastest_record(){
+        $item = $this->auction_model->get_lastest_record();
+       if($item){
+           echo json_encode(array(
+               "status" => '000',
+               "data" => $item
+           ));
+           die();
+       }else json_encode(array(
+           "status" => '001'
+       ));
+        die();
+    }
 }
