@@ -26,35 +26,27 @@ class Auction extends CI_Controller
     {
         if (1) {
             $config['upload_path'] = 'assets/';
-//            $config['allowed_types'] = 'gif|jpg|png';
+            $config['allowed_types'] = 'gif|jpg|png';
 //            $config['max_size'] = '900';
 //            $config['max_width'] = '1024';
 //            $config['max_height'] = '768';
             $this->load->library("upload");
             $this->upload->initialize($config);
-//            echo json_encode(array(
-//                "data" => $this->input->post('name')
-//            ));
-//            die();
+
             if ($this->upload->do_upload("file")) {
                 $check = $this->upload->data();
                 $data['image'] = $config['upload_path'].$_FILES['file']['name'];
                 $data['name'] = $this->input->post('name');
                 $data['price'] = $this->input->post('price');
                 $data['description'] = $this->input->post('description');
-                $this->auction_model->upload_file($data);
-//                echo 'Upload thành công file: ' . $_FILES['file']['name'];
-                echo json_encode(array(
-                    "status" => '000'
-                ));
-                die();
-            } else {
-                $data['1'] = 'tadasd';
-                $data['errors'] = $this->upload->display_errors();
-                var_dump($data);die();
-                $this->load->view("send-file", $data);
+                $result = $this->auction_model->upload_file($data);
+                if ($result) {
+                    echo json_encode(array(
+                        "status" => '000'
+                    ));
+                    die();
+                }
             }
-
             echo json_encode(array(
                 "status" => '001'
             ));

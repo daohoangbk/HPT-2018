@@ -36,70 +36,49 @@ class Manager extends Component {
     };
     handleSubmit = async (event) => {
         event.preventDefault();
-        console.log(this.state);
-        const accounts = await web3.eth.getAccounts();
-        await auction.methods.auction(this.state.price).send({
-            from: accounts[0]
+        let form_data = new FormData();
+        //thêm files vào trong form data
+        form_data.append('file', this.state.image);
+        form_data.append('name', this.state.name);
+        form_data.append('price', this.state.price);
+        form_data.append('description', this.state.description);
+        //sử dụng ajax post
+        let response;
+        await $.ajax({
+            url: "http://localhost/hpt/auction/doUpload", // gửi đến file upload.php
+            dataType: 'text',
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: form_data,
+            type: 'post',
+            success: async function (res) {
+                res = JSON.parse(res);
+                response = res;
+            }
         });
-        let isBidding = await auction.methods.isBidding().call();
-        this.setState({isBidding: isBidding});
-        // let form_data = new FormData();
-        // //thêm files vào trong form data
-        // form_data.append('file', this.state.image);
-        // form_data.append('name', this.state.name);
-        // form_data.append('price', this.state.price);
-        // form_data.append('description', this.state.description);
-        // console.log(form_data);
-        // //sử dụng ajax post
-        // $.ajax({
-        //     url: "http://localhost/hpt/auction/doUpload", // gửi đến file upload.php
-        //     dataType: 'text',
-        //     cache: false,
-        //     contentType: false,
-        //     processData: false,
-        //     data: form_data,
-        //     type: 'post',
-        //     success: function (res) {
-        //         $('.status').text(res);
-        //         console.log(res);
-        //         $('#file').val('');
-        //     }
-        // });
-        // --------------------------------------------------------------------------
-        // let formBody = [];
-        // for (let property in this.state) {
-        //     let encodedKey = encodeURIComponent(property);
-        //     let encodedValue = encodeURIComponent(this.state[property]);
-        //     formBody.push(encodedKey + "=" + encodedValue);
-        // }
-        // formBody = formBody.join("&");
-        // fetch('http://localhost/hpt/auction/doUpload', {
-        //     body: formBody,
-        //     cache: 'no-cache',
-        //     headers: {
-        //         // 'content-type': 'application/json'
-        //         'Content-Type': 'application/x-www-form-urlencoded'
-        //     },
-        //     method: 'POST',
-        // })
-        //     .then(function (response) {
-        //         return response.json();
-        //     })
-        //     .then(function (myJson) {
-        //         console.log(myJson);
-        //     });
+        if (response.status == '000') {
+            const accounts = await web3.eth.getAccounts();
+            await auction.methods.auction(this.state.price).send({
+                from: accounts[0]
+            });
+            let isBidding = await auction.methods.isBidding().call();
+            this.setState({isBidding: isBidding});
+        } else {
+            console.log('Save info failed');
+        }
     };
 
     render() {
         if (this.state.isBidding) {
-        // if (false) {
+            // if (false) {
             return (
-                <Bidder isManager={true} />
+                <Bidder isManager={true}/>
             );
         } else {
             return (
-                <div id="manager-page" class="main-content">
-                    <h1 className="text-center">Manager</h1>
+                <div id="manager-page" className="main-content">
+                    <h1 className="text-center">Manager Page</h1>
                     <form name="myForm" onSubmit={this.handleSubmit}>
                         <div className="form-group">
                             <div>
