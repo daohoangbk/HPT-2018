@@ -2,6 +2,7 @@ pragma solidity ^0.4.23;
 contract Auction {
   address public manager;
   uint public latestBid;
+  uint public initBid;
   address public latestBidder;
   bool public isBidding;
 
@@ -11,8 +12,9 @@ contract Auction {
   }
 
   function auction(uint bid) public {
-    latestBid = bid * 1 ether; //1000000000000000000;
+    initBid = bid * 1 ether; //1000000000000000000;
     isBidding = true;
+    latestBid = initBid;
   }
 
   function bid() public payable {

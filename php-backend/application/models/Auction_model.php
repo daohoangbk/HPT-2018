@@ -11,8 +11,8 @@ class Auction_model extends CI_Model
     {
         $this->db->insert('product', $data);
         if ($this->db->affected_rows() > 0) {
-            echo 'done';
-        } else echo 'false';
+            return true;
+        } else return false;
 //        $this->db->select('*');
 //        $this->db->from('file');
 //        $query  = $this->db->get();

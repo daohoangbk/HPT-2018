@@ -16,6 +16,7 @@ class Bidder extends Component {
         const seller = await auction.methods.manager().call();
         const latestBid = await auction.methods.latestBid().call();
         const latestBidder = await auction.methods.latestBidder().call();
+        const price = await auction.methods.initBid().call();
         const balance = await web3.eth.getBalance(auction.options.address);
         // fetch data
         this.setState({
@@ -23,31 +24,71 @@ class Bidder extends Component {
                 image: 'https://www.dictionary.com/e/wp-content/uploads/2018/04/Sid-the-Sloth.jpg',
                 name: "Computer",
                 description: "Rat dep",
-                price: 5,
-                currentBid: 5
-            }
+                price,
+                currentBid: latestBid
+            },
+            bid: latestBid
         })
     }
 
+    handleBidChange = (event) => {
+        event.preventDefault();
+    };
+
     render() {
         return (
-            <div class="main-content text-center">
-                <h1 class="text-center">Bidder</h1>
+            <div className="main-content text-center">
+                <h1 className="text-center">Bidder Page</h1>
                 <div>
-                    <img src={this.state.product.image} alt="Anh minh hoa" class="img-responsive"/>
+                    <img src={this.state.product.image} alt="Anh minh hoa" className="img-responsive"/>
                 </div>
-                <h2>
-                    Tên sản phẩm: {this.state.product.name}
-                </h2>
-                <p>
-                    Thông tin chi tiết: {this.state.product.description}
-                </p>
-                <div>
-                    Giá khởi điểm: {this.state.product.price}
+                <table className="table text-left">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Tên sản phẩm:</td>
+                            <td>{this.state.product.name}</td>
+                        </tr>
+                        <tr>
+                            <td>Thông tin chi tiết:</td>
+                            <td>{this.state.product.description}</td>
+                        </tr>
+                        <tr>
+                            <td>Giá khởi điểm:</td>
+                            <td>{this.state.product.price}</td>
+                        </tr>
+                        <tr>
+                            <td>Giá hiện tại:</td>
+                            <td>{this.state.product.currentBid}</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div className="form-group text-left">
+                    <div>
+                        <span className="input-title">Số tiền đấu giá:</span>
+                        <div className="form-inline">
+                            <div className="form-group" style={{"marginRight": "30px"}}>
+                                <div className="input-group">
+                                    <div className="input-group-addon">$</div>
+                                    <input className="form-control" name="bid" onChange={this.handleBidChange}
+                                           value={this.state.bid} type="text" required/>
+                                    <div className="input-group-addon">ether</div>
+                                </div>
+                            </div>
+                            <button type="submit" className="btn btn-primary">Đấu giá</button>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    Giá hiện tại: {this.state.product.currentBid}
-                </div>
+
             </div>
         );
     }
