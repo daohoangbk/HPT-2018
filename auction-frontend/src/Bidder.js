@@ -7,18 +7,24 @@ import auction from './auction';
 class Bidder extends Component {
     state = {
         isManager: this.props.isManager ? this.props.isManager : false,
-        product: {}
+        product: {
+            image: 'https://www.dictionary.com/e/wp-content/uploads/2018/04/Sid-the-Sloth.jpg',
+            name: "",
+            description: "",
+            price: 0,
+            currentBid: 0
+        }
 
     };
 
     async componentDidMount() {
-        console.log(this.state.isManager);
         const seller = await auction.methods.manager().call();
         const latestBid = await auction.methods.latestBid().call();
         const latestBidder = await auction.methods.latestBidder().call();
         const price = await auction.methods.initBid().call();
         const balance = await web3.eth.getBalance(auction.options.address);
         // fetch data
+
         this.setState({
             product: {
                 image: 'https://www.dictionary.com/e/wp-content/uploads/2018/04/Sid-the-Sloth.jpg',
@@ -27,7 +33,6 @@ class Bidder extends Component {
                 price,
                 currentBid: latestBid
             },
-            bid: latestBid
         })
     }
 
@@ -60,11 +65,15 @@ class Bidder extends Component {
                         </tr>
                         <tr>
                             <td>Giá khởi điểm:</td>
-                            <td>{this.state.product.price}</td>
+                            <td>{web3.utils.fromWei(this.state.product.price.toString(), 'ether')} ether</td>
                         </tr>
                         <tr>
                             <td>Giá hiện tại:</td>
-                            <td>{this.state.product.currentBid}</td>
+                            <td>{web3.utils.fromWei(this.state.product.currentBid.toString(), 'ether')} ether</td>
+                        </tr>
+                        <tr>
+                            <td>Người giữ giá cao nhất hiện tại:</td>
+                            <td>{this.state.latestBidder}</td>
                         </tr>
                         <tr>
                             <td></td>
@@ -80,7 +89,8 @@ class Bidder extends Component {
                                 <div className="input-group">
                                     <div className="input-group-addon">$</div>
                                     <input className="form-control" name="bid" onChange={this.handleBidChange}
-                                           value={this.state.bid} type="text" required/>
+                                           value={this.state.bid}
+                                           type="text" required/>
                                     <div className="input-group-addon">ether</div>
                                 </div>
                             </div>

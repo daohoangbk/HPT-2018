@@ -18,8 +18,9 @@ class App extends Component {
     const manager = await auction.methods.manager().call();
     const latestBid = await auction.methods.latestBid().call();
     const latestBidder = await auction.methods.latestBidder().call();
-    const seller = await auction.methods.seller().call();
+    const seller = manager;
     const balance = await web3.eth.getBalance(auction.options.address);
+    console.log(latestBid)
     this.setState({
       manager,
       latestBid,

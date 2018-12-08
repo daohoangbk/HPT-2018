@@ -110,7 +110,8 @@ class Manager extends Component {
                             <div>
                                 <span className="input-title">Giá khởi điểm (Ether):</span>
                                 <input className="form-control" name="price" onChange={this.handlePriceChange}
-                                       value={this.state.price} type="text" required/>
+                                       // value={this.state.price}
+                                       type="text" required/>
                             </div>
                         </div>
 
