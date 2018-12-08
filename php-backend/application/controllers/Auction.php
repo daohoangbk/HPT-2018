@@ -1,4 +1,6 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: *");
 
 class Auction extends CI_Controller
 {
@@ -24,13 +26,16 @@ class Auction extends CI_Controller
     {
         if (1) {
             $config['upload_path'] = 'assets/';
-            $config['allowed_types'] = 'gif|jpg|png';
-            $config['max_size'] = '900';
-            $config['max_width'] = '1024';
-            $config['max_height'] = '768';
+//            $config['allowed_types'] = 'gif|jpg|png';
+//            $config['max_size'] = '900';
+//            $config['max_width'] = '1024';
+//            $config['max_height'] = '768';
             $this->load->library("upload");
             $this->upload->initialize($config);
-//            var_dump($this->input->post('name'));die();
+//            echo json_encode(array(
+//                "data" => $this->input->post('name')
+//            ));
+//            die();
             if ($this->upload->do_upload("file")) {
                 $check = $this->upload->data();
                 $data['image'] = $config['upload_path'].$_FILES['file']['name'];
@@ -38,13 +43,22 @@ class Auction extends CI_Controller
                 $data['price'] = $this->input->post('price');
                 $data['description'] = $this->input->post('description');
                 $this->auction_model->upload_file($data);
-                echo 'Upload thành công file: ' . $_FILES['file']['name'];
+//                echo 'Upload thành công file: ' . $_FILES['file']['name'];
+                echo json_encode(array(
+                    "status" => '000'
+                ));
+                die();
             } else {
                 $data['1'] = 'tadasd';
                 $data['errors'] = $this->upload->display_errors();
                 var_dump($data);die();
                 $this->load->view("send-file", $data);
             }
+
+            echo json_encode(array(
+                "status" => '001'
+            ));
+            die();
         }
 //        if (isset($_POST) && !empty($_FILES['file'])) {
 //            $duoi = explode('.', $_FILES['file']['name']); // tách chuỗi khi gặp dấu .

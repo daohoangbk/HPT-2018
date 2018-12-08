@@ -1,17 +1,18 @@
 pragma solidity ^0.4.23;
 contract Auction {
   address public manager;
-  address public seller;
   uint public latestBid;
   address public latestBidder;
+  bool public isBidding;
 
   constructor() public {
     manager = msg.sender;
+    isBidding = false;
   }
 
   function auction(uint bid) public {
     latestBid = bid * 1 ether; //1000000000000000000;
-    seller = msg.sender;
+    isBidding = true;
   }
 
   function bid() public payable {
@@ -25,7 +26,8 @@ contract Auction {
   }
 
   function finishAuction() restricted public {
-    seller.transfer(address(this).balance);
+    manager.transfer(address(this).balance);
+    isBidding = false;
   }
 
   modifier restricted() {
