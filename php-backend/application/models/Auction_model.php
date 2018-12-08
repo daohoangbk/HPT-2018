@@ -17,7 +17,7 @@ class Auction_model extends CI_Model
     function get_lastest_record(){
         $this->db->select('*');
         $this->db->from('product');
-        $this->db->order_by('id','dsc');
+        $this->db->order_by('id','desc');
         $query = $this->db->get();
         if($query->num_rows() > 0){
             $result = $query->result_array();
