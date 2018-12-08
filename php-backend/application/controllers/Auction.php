@@ -30,10 +30,13 @@ class Auction extends CI_Controller
             $config['max_height'] = '768';
             $this->load->library("upload");
             $this->upload->initialize($config);
-//            var_dump($config);die();
+//            var_dump($this->input->post('name'));die();
             if ($this->upload->do_upload("file")) {
                 $check = $this->upload->data();
-                $data['link'] = $config['upload_path'].$_FILES['file']['name'];
+                $data['image'] = $config['upload_path'].$_FILES['file']['name'];
+                $data['name'] = $this->input->post('name');
+                $data['price'] = $this->input->post('price');
+                $data['description'] = $this->input->post('description');
                 $this->auction_model->upload_file($data);
                 echo 'Upload thành công file: ' . $_FILES['file']['name'];
             } else {

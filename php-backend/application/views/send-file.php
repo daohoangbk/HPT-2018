@@ -20,7 +20,18 @@ $upload=array(
         <div class="panel-body">
             <form action="" method="POST" role="form">
                 <legend>Upload</legend>
-
+                <div class="form-"group>
+                    <label for="name">Name</label>
+                        <input id="product-name" type="text" name="product-name">
+                </div>
+                <div class="form-"group>
+                    <label for="name">Price</label>
+                        <input id="product-price" type="text" name="product-price">
+                </div>
+                <div class="form-"group>
+                    <label for="name">Description</label>
+                        <input id="product-description" type="text" name="product-description">
+                </div>
                 <div class="form-group">
                     <label for="file">Chọn file</label>
                     <input id="file" type="file" name="sortpic" required=""/>
@@ -38,20 +49,27 @@ $upload=array(
 <script>
     //xử lý khi có sự kiện click
     $('#upload').on('click', function () {
+        productName = $('#product-name').val();
+        productPrice = $('#product-price').val();
+        productDescription = $('#product-description').val();
+        console.log(productName);
+        console.log(productPrice);
         //Lấy ra files
         var file_data = $('#file').prop('files')[0];
         //lấy ra kiểu file
         var type = file_data.type;
-        console.log(type);
         //Xét kiểu file được upload
         var match = ["image/gif", "image/png", "image/jpg","image/jpeg"];
         //kiểm tra kiểu file
         if (type == match[0] || type == match[1] || type == match[2] || type == match[3]) {
             //khởi tạo đối tượng form data
-            console.log(file_data);
             var form_data = new FormData();
             //thêm files vào trong form data
             form_data.append('file', file_data);
+            form_data.append('name',productName);
+            form_data.append('price',productPrice);
+            form_data.append('description',productDescription);
+            console.log(form_data);
             //sử dụng ajax post
             $.ajax({
                 url: "<?php echo base_url().'auction/doUpload'?>", // gửi đến file upload.php

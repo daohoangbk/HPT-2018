@@ -9,7 +9,7 @@ class Auction_model extends CI_Model
 
     function upload_file($data)
     {
-        $this->db->insert('file', $data);
+        $this->db->insert('product', $data);
         if ($this->db->affected_rows() > 0) {
             echo 'done';
         } else echo 'false';
