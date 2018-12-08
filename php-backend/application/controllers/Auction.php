@@ -17,22 +17,17 @@ class Auction extends CI_Controller
         $this->load->view('send-file', $data);
     }
 
-    public function ctrl2()
-    {
-        echo 'ctrl2';
-    }
-
     public function doUpload()
     {
         $config['upload_path'] = 'assets/';
         $config['allowed_types'] = 'gif|jpg|png';
-        $new_name = time() . $_FILES["file"]['name'];
+        $new_name = time();
         $config['file_name'] = $new_name;
         $this->load->library("upload");
         $this->upload->initialize($config);
         if ($this->upload->do_upload("file")) {
             $check = $this->upload->data();
-            $data['image'] = 'localhost/hpt/' . $config['upload_path'] . $_FILES['file']['name'];
+            $data['image'] = 'http://localhost/hpt/' . $config['upload_path'] . $new_name;
             $data['name'] = $this->input->post('name');
             $data['price'] = $this->input->post('price');
             $data['description'] = $this->input->post('description');
