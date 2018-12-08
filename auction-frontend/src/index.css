@@ -12,3 +12,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+#manager-page {
+  max-width: 500px;
+  margin: auto;
+}

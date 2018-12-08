@@ -58,6 +58,20 @@ const abi = [
     "type": "function"
   },
   {
+    "constant": true,
+    "inputs": [],
+    "name": "isBidding",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
