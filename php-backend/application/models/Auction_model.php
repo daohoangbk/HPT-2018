@@ -13,14 +13,15 @@ class Auction_model extends CI_Model
         if ($this->db->affected_rows() > 0) {
             return true;
         } else return false;
-//        $this->db->select('*');
-//        $this->db->from('file');
-//        $query  = $this->db->get();
-//        if($query->num_rows() > 0){
-//            $result =  $query->result_array();
-//            var_dump($result);die();
-//            return $result[0];
-//        }
-
+    }
+    function get_lastest_record(){
+        $this->db->select('*');
+        $this->db->from('product');
+        $this->db->order_by('id','dsc');
+        $query = $this->db->get();
+        if($query->num_rows() > 0){
+            $result = $query->result_array();
+            return $result[0];
+        }else return false;
     }
 }
