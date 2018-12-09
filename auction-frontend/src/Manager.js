@@ -11,7 +11,7 @@ class Manager extends Component {
         image: null,
         name: '',
         description: '',
-        price: 0,
+        price: '',
         isBidding: false
     };
 
@@ -30,9 +30,9 @@ class Manager extends Component {
         this.setState({description: event.target.value});
     };
     handlePriceChange = (event) => {
-        if (!isNaN(parseFloat(event.target.value))) {
-            this.setState({price: parseFloat(event.target.value)});
-        }
+        // if (!isNaN(parseFloat(event.target.value))) {
+        this.setState({price: event.target.value});
+        // }
     };
     handleSubmit = async (event) => {
         event.preventDefault();
@@ -44,30 +44,30 @@ class Manager extends Component {
         form_data.append('description', this.state.description);
         //sử dụng ajax post
         let response;
-        // await $.ajax({
-        //     url: "http://localhost/hpt/auction/doUpload", // gửi đến file upload.php
-        //     dataType: 'text',
-        //     cache: false,
-        //     contentType: false,
-        //     processData: false,
-        //     data: form_data,
-        //     type: 'post',
-        //     success: async function (res) {
-        //         console.log(res);
-        //         res = JSON.parse(res);
-        //         response = res;
-        //     }
-        // });
-        // if (response.status == '000') {
+        await $.ajax({
+            url: "http://localhost/hpt/auction/doUpload", // gửi đến file upload.php
+            dataType: 'text',
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: form_data,
+            type: 'post',
+            success: async function (res) {
+                console.log(res);
+                res = JSON.parse(res);
+                response = res;
+            }
+        });
+        if (response.status == '000') {
             const accounts = await web3.eth.getAccounts();
-            await auction.methods.auction(this.state.price).send({
+            await auction.methods.auction(parseFloat(this.state.price)).send({
                 from: accounts[0]
             });
             let isBidding = await auction.methods.isBidding().call();
             this.setState({isBidding: isBidding});
-        // } else {
-        //     console.log('Save info failed');
-        // }
+        } else {
+            console.log('Save info failed');
+        }
     };
 
     render() {

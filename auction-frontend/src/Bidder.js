@@ -14,9 +14,12 @@ class Bidder extends Component {
             description: "",
             price: 0,
         },
-        currentBid: 0,
+        latestBid: 0,
         latestBidder: '',
-        bidValue: 0
+        bidValue: '',
+        balance: '',
+        seller: '',
+        timeBid: 0
     };
 
     async componentDidMount() {
@@ -24,6 +27,7 @@ class Bidder extends Component {
         const latestBid = await auction.methods.latestBid().call();
         const latestBidder = await auction.methods.latestBidder().call();
         const price = await auction.methods.initBid().call();
+        const timeBid = await auction.methods.timeBid().call();
         const balance = await web3.eth.getBalance(auction.options.address);
         let response;
         await $.ajax({
@@ -34,33 +38,41 @@ class Bidder extends Component {
             processData: false,
             type: 'get',
             success: async function (res) {
-                res = JSON.parse(res);
-                response = res;
+                try {
+                    res = JSON.parse(res);
+                    response = res;
+                } catch (e) {
+                    console.log(e);
+                }
+
             }
         });
-        let data = response.data;
-        console.log(response);
-        // fetch data
+        if (response) {
+            let data = response.data;
+            console.log(response);
 
-        this.setState({
-            product: {
-                image: data.image,
-                name: data.name,
-                description: data.description,
-                price,
-            },
-            currentBid: latestBid,
-            latestBidder,
-        })
+            this.setState({
+                product: {
+                    image: data.image,
+                    name: data.name,
+                    description: data.description,
+                    price,
+                },
+                latestBid,
+                latestBidder,
+                seller,
+                timeBid
+            })
+        }
     }
 
     handleBidChange = (event) => {
         event.preventDefault();
         this.setState({
-            bidValue: parseFloat(event.target.value)
+            bidValue: event.target.value
         });
     };
-    handleSubmit = async (event) => {
+    handleBidSubmit = async (event) => {
         event.preventDefault();
         const accounts = await web3.eth.getAccounts();
         const weiAmount = web3.utils.toWei(parseFloat(this.state.bidValue).toString(), 'ether');
@@ -68,12 +80,11 @@ class Bidder extends Component {
             from: accounts[0],
             value: weiAmount
         });
-        console.log(test);
-        // this.setState({
-        //     latestBid: weiAmount,
-        //     balance: weiAmount,
-        //     latestBidder: accounts[0]
-        // });
+        this.setState({
+            latestBid: weiAmount,
+            balance: weiAmount,
+            latestBidder: accounts[0]
+        })
     };
 
     render() {
@@ -91,32 +102,39 @@ class Bidder extends Component {
                     </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Tên sản phẩm:</td>
-                            <td>{this.state.product.name}</td>
-                        </tr>
-                        <tr>
-                            <td>Thông tin chi tiết:</td>
-                            <td>{this.state.product.description}</td>
-                        </tr>
-                        <tr>
-                            <td>Giá khởi điểm:</td>
-                            <td>{web3.utils.fromWei(this.state.product.price.toString(), 'ether')} ether</td>
-                        </tr>
-                        <tr>
-                            <td>Giá hiện tại:</td>
-                            <td>{web3.utils.fromWei(this.state.currentBid.toString(), 'ether')} ether</td>
-                        </tr>
-                        <tr>
-                            <td>Người giữ giá cao nhất hiện tại:</td>
-                            <td>{this.state.latestBidder}</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                        </tr>
+                    <tr>
+                        <td>Tên sản phẩm:</td>
+                        <td>{this.state.product.name}</td>
+                    </tr>
+                    <tr>
+                        <td>Thông tin chi tiết:</td>
+                        <td>{this.state.product.description}</td>
+                    </tr>
+                    <tr>
+                        <td>Giá khởi điểm:</td>
+                        <td>{web3.utils.fromWei(this.state.product.price.toString(), 'ether')} ether</td>
+                    </tr>
+                    <tr>
+                        <td>Giá hiện tại:</td>
+                        <td>{web3.utils.fromWei(this.state.latestBid.toString(), 'ether')} ether</td>
+                    </tr>
+                    {!this.state.isManager &&
+                    <tr>
+                        <td>Người bán:</td>
+                        <td>{this.state.seller}</td>
+                    </tr>
+                    }
+                    <tr>
+                        <td>Người giữ giá cao nhất hiện tại:</td>
+                        <td>{this.state.latestBidder}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
                     </tbody>
                 </table>
+                {!this.state.isManager &&
                 <div className="form-group text-left">
                     <div>
                         <span className="input-title">Số tiền đấu giá:</span>
@@ -134,6 +152,12 @@ class Bidder extends Component {
                         </form>
                     </div>
                 </div>
+                }
+                {this.state.isManager &&
+                <div className="form-group text-left">
+                    <button type="submit" className="btn btn-primary">Chốt giá lần {this.state.timeBid + 1}</button>
+                </div>
+                }
             </div>
         );
     }

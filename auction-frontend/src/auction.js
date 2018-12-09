@@ -60,6 +60,20 @@ const abi = [
   {
     "constant": true,
     "inputs": [],
+    "name": "timeBid",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
     "name": "initBid",
     "outputs": [
       {
@@ -103,7 +117,25 @@ const abi = [
   {
     "constant": false,
     "inputs": [],
+    "name": "increaseTimeBid",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
     "name": "finishAuction",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "cancelAuction",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
