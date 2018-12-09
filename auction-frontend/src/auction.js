@@ -140,6 +140,15 @@ const abi = [
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "initParam",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
   }
 ];
 export default new web3.eth.Contract(abi, address);

@@ -40,15 +40,22 @@ contract Auction {
 
     function finishAuction() restricted public {
         manager.transfer(address(this).balance);
-        isBidding = false;
+        initParam();
     }
 
     function cancelAuction() restricted public {
         if (latestBidder != 0x0) {
             latestBidder.transfer(address(this).balance);
-            isBidding = false;
-            timeBid = 0;
         }
+        initParam();
+    }
+
+    function initParam() public{
+        latestBid = 0;
+        initBid = 0;
+        latestBidder = 0;
+        isBidding = false;
+        timeBid = 0;
     }
 
     modifier restricted() {

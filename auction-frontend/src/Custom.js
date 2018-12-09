@@ -14,6 +14,8 @@ class Custom extends Component {
     async componentDidMount() {
         const manager = await auction.methods.manager().call();
         const accounts = await web3.eth.getAccounts();
+        console.log(manager);
+        console.log(accounts);
         if (accounts[0] == manager) {
             this.setState({
                 isAdmin: true
