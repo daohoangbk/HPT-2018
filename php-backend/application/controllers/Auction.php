@@ -64,4 +64,21 @@ class Auction extends CI_Controller
         ));
         die();
     }
+
+    public function save_info_bidder () {
+        $data['bidder'] = $this->input->post('bidder');
+        $data['bid'] = $this->input->post('bid');
+        $data['product_id'] = $this->input->post('product_id');
+        $result = $this->auction_model->save_info_bidder($data);
+        if ($result) {
+            echo json_encode(array(
+                "status" => '000'
+            ));
+        } else {
+            echo json_encode(array(
+                "status" => '001'
+            ));
+        }
+        die();
+    }
 }

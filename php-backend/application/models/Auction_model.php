@@ -24,4 +24,10 @@ class Auction_model extends CI_Model
             return $result[0];
         }else return false;
     }
+    function save_info_bidder($data){
+        $this->db->insert('bidding', $data);
+        if ($this->db->affected_rows() > 0) {
+            return true;
+        } else return false;
+    }
 }

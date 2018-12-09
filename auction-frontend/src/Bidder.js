@@ -13,6 +13,7 @@ class Bidder extends Component {
             name: "",
             description: "",
             price: 0,
+            id: ''
         },
         latestBid: 0,
         latestBidder: '',
@@ -59,6 +60,7 @@ class Bidder extends Component {
                     name: data.name,
                     description: data.description,
                     price,
+                    id: data.id
                 },
                 latestBid,
                 latestBidder,
@@ -92,18 +94,45 @@ class Bidder extends Component {
     handleTimeBid = async (event) => {
         event.preventDefault();
         const accounts = await web3.eth.getAccounts();
-        await auction.methods.increaseTimeBid().send({
+        auction.methods.increaseTimeBid().send({
             from: accounts[0]
+        }).then((result) => {
+            let timeBid = parseInt(this.state.timeBid) + 1;
+            if (timeBid == 2) {
+                let form_data = new FormData();
+                form_data.append('bidder', this.state.latestBidder);
+                form_data.append('bid', web3.utils.fromWei(this.state.latestBid.toString(), 'ether'));
+                form_data.append('product_id', this.state.product.id);
+                $.ajax({
+                    url: "http://localhost/hpt/auction/save_info_bidder",
+                    dataType: 'text',
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: form_data,
+                    type: 'post',
+                    success: async function (res) {
+                        try {
+                            res = JSON.parse(res);
+                            if (res.status == '000'){
+                                window.location.reload();
+                            } else {
+                                console.log("Error save bidder info!");
+                            }
+                        } catch (e) {
+                            console.log(e);
+                        }
+
+                    }
+                });
+            } else {
+                this.setState({
+                    timeBid,
+                })
+            }
+        }).catch(err => {
+            console.log(err)
         });
-        let timeBid = parseInt(this.state.timeBid) + 1;
-        if (timeBid == 2) {
-            // location.reload();
-            window.location.reload();
-        } else {
-            this.setState({
-                timeBid,
-            })
-        }
     };
     handleCancelBidding = async (event) => {
         event.preventDefault();
